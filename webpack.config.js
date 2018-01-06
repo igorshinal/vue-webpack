@@ -1,5 +1,7 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const webpack = require('webpack')
+const progressBarWebpackPlugin = require('progress-bar-webpack-plugin')
 
 module.exports = {
     /*Точка входа откуда мы будем все собирать*/
@@ -11,19 +13,40 @@ module.exports = {
         path: path.join(__dirname, 'dist'),
         filename: 'js/[name].js'
     },
+    /*вотчер*/
+    watch: true,
+    watchOptions: {
+      aggregateTimeout: 300,
+        poll:1000
+    },
     /*Создаем экземпляр плагина и задаем параметры*/
     plugins: [
         new HtmlWebpackPlugin({
             /*Вставляет заголовок в собранный шаблон*/
             title: 'Vue webpack template',
             /*Как будет называться собранный файл*/
-            filename: 'test.html',
-            /*куда нам нужно вставлять скриптовіе теги head false true body*/
+            filename: 'index.html',
+            /*куда нам нужно вставлять скриптовые теги head false true body*/
             inject: true,
             /*Добавляет хэш к урлу собранного скрипта*/
             hash: true,
             /*Для генерации собранногго шаблона мы будем использовать index.html*/
-            template: 'index.html'
-        })
+            template: 'index.html',
+            minify: {
+                /*Убирает комментарии*/
+                removeComments: true,
+                /*убирает пробелы*/
+                collapseWhitespace: true,
+                /*убирает кавычки*/
+                removeAttributeQuotes: true
+            }
+        }),
+        /*webpack игорирутет эти файлы и не вотчит*/
+
+        new webpack.WatchIgnorePlugin([
+            path.join(__dirname, 'node_modules'),
+            path.join(__dirname, 'src/component.js')
+        ]),
+        new progressBarWebpackPlugin()
     ]
 }
