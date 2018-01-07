@@ -2,6 +2,7 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
 const progressBarWebpackPlugin = require('progress-bar-webpack-plugin')
+const friendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 
 module.exports = {
     /*Точка входа откуда мы будем все собирать*/
@@ -13,11 +14,16 @@ module.exports = {
         path: path.join(__dirname, 'dist'),
         filename: 'js/[name].js'
     },
-    /*вотчер*/
     watch: true,
     watchOptions: {
       aggregateTimeout: 300,
-        poll:1000
+        poll: 1000
+    },
+    stats: {
+        colors: true,
+        modules: true,
+        reasons: true,
+        errorDetails: true
     },
     /*Создаем экземпляр плагина и задаем параметры*/
     plugins: [
@@ -47,6 +53,13 @@ module.exports = {
             path.join(__dirname, 'node_modules'),
             path.join(__dirname, 'src/component.js')
         ]),
-        new progressBarWebpackPlugin()
+        new progressBarWebpackPlugin(),
+        new friendlyErrorsPlugin({
+            compilationSuccessInfo: {
+                messages: ['You application is running here http://localhost:8080'],
+                notes: ['Some additional notes to be displayed upon successful compilation']
+            },
+            clearConsole: true
+        })
     ]
 }
